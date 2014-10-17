@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <script>
+        function changeRobot() {
+            newBot = Math.random().toString(36).substring(7);
+            document.body.innerHTML += "<img src='http://www.robohash.org/" + newBot + ".png?bgset=dsfad&set=set2'/>";
+
+        }
+        for (var i = 0; i < 10; i++) {
+            changeRobot();
+        }
+    </script>
+</body>
+</html>
