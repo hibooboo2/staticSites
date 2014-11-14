@@ -5,8 +5,7 @@ var GameBox = React.createClass({
      componentDidMount: function(){
         // componentDidMount is called by react when the component
         // has been rendered on the page. We can set the interval here:
-        this.tick = setInterval(this.gravity, 1000);
-
+        this.tick = setInterval(this.gravity, 500);
     },
 
     componentWillUnmount: function(){
@@ -34,9 +33,16 @@ var GameBox = React.createClass({
         this.setState({gameState:this.state.gameState});
     },gravity: function(){
         if(this.state.gameState.currentPiece && !this.state.gameState.gameOver){
-            console.log(this.state.gameState.currentPiece.movePieceDown(this.state.gameState.board()));
-            this.setState({gameState:this.state.gameState});
+            if(!this.state.gameState.currentPiece.movePieceDown(this.state.gameState.board())){
+                this.dropPiece();
+            }else{
+                this.setState({gameState:this.state.gameState});
+            }
+        }else{
+            this.restart();
         }
+    },restart: function(){
+        this.setState({gameState:gameEngine.initialgameState()})
     },
     render: function() {
         if(this.state.gameState.gameOver){
@@ -44,14 +50,15 @@ var GameBox = React.createClass({
         };
         return (
             <div className="GameBox">
-
+            <div className="Controls">
             <button onClick={this.addPiece}>Add Piece</button>
             <button onClick={this.dropPiece}>Drop Piece</button>
             <button onClick={this.gravity}>Soft Drop Piece</button>
             <button onClick={this.rotatePiece}>Rotate</button>
             <button onClick={this.moveLeft}>Move Left</button>
             <button onClick={this.moveRight}>Move Right</button>
-
+            <button onClick={this.restart}>Restart</button>
+            </div>
             {this.state.gameState.board().map(function(row) {
                 return <div className="row">{row.map(function(cell) {
                     return <div className={"cell"} style={{"backgroundColor": cell.color}}></div>;
