@@ -1,11 +1,12 @@
 var GameBox = React.createClass({
     getInitialState: function(){
-        return {gameState:this.props.gameState,ticked:0};
+        return {gameState:this.props.gameState,ticked:0,paused:false};
     },
      componentDidMount: function(){
         // componentDidMount is called by react when the component
         // has been rendered on the page. We can set the interval here:
         this.tick = setInterval(this.gravity, 500);
+
     },
 
     componentWillUnmount: function(){
@@ -43,6 +44,12 @@ var GameBox = React.createClass({
         }
     },restart: function(){
         this.setState({gameState:gameEngine.initialgameState()})
+    },pause: function(){
+        if(this.state.paused){
+            clearInterVal(this.tick);
+        }else{
+            this.tick = setInterval(this.gravity, 400);
+        }
     },
     render: function() {
         if(this.state.gameState.gameOver){
@@ -58,6 +65,7 @@ var GameBox = React.createClass({
             <button onClick={this.moveLeft}>Move Left</button>
             <button onClick={this.moveRight}>Move Right</button>
             <button onClick={this.restart}>Restart</button>
+            <button onClick={this.pause}>NextLevel</button>
             </div>
             {this.state.gameState.board().map(function(row) {
                 return <div className="row">{row.map(function(cell) {
