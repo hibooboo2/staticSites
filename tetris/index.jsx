@@ -5,8 +5,7 @@ var GameBox = React.createClass({
      componentDidMount: function(){
         // componentDidMount is called by react when the component
         // has been rendered on the page. We can set the interval here:
-        this.tick = setInterval(this.gravity, 500);
-
+        this.tick = setInterval(this.gravity, 500-this.state.ticked);
     },
 
     componentWillUnmount: function(){
@@ -33,7 +32,9 @@ var GameBox = React.createClass({
         this.state.gameState.currentPiece.shiftRight(this.state.gameState.board());
         this.setState({gameState:this.state.gameState});
     },gravity: function(){
-        if(this.state.gameState.currentPiece && !this.state.gameState.gameOver){
+        if(this.state.paused){
+            console.log("Paused");
+        }else if(this.state.gameState.currentPiece && !this.state.gameState.gameOver){
             if(!this.state.gameState.currentPiece.movePieceDown(this.state.gameState.board())){
                 this.dropPiece();
             }else{
@@ -45,11 +46,8 @@ var GameBox = React.createClass({
     },restart: function(){
         this.setState({gameState:gameEngine.initialgameState()})
     },pause: function(){
-        if(this.state.paused){
-            clearInterVal(this.tick);
-        }else{
-            this.tick = setInterval(this.gravity, 400);
-        }
+        this.state.paused = !this.state.paused;
+        this.setState({gameState:this.state.gameState,paused:this.state.paused})
     },
     render: function() {
         if(this.state.gameState.gameOver){
@@ -65,7 +63,7 @@ var GameBox = React.createClass({
             <button onClick={this.moveLeft}>Move Left</button>
             <button onClick={this.moveRight}>Move Right</button>
             <button onClick={this.restart}>Restart</button>
-            <button onClick={this.pause}>NextLevel</button>
+            <button onClick={this.pause}>Pause</button>
             </div>
             {this.state.gameState.board().map(function(row) {
                 return <div className="row">{row.map(function(cell) {
